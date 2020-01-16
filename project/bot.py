@@ -1,24 +1,12 @@
 # -*- coding: utf-8 -*-
 import telebot
-import config
 import os
+import config
 from flask import Flask, request
 
 bot = telebot.TeleBot(config.TOKEN)
-server = Flask(__name__)
+
 print("HELLO HUROKU")
-
-@server.route("/" + config.TOKEN, methods=['POST'])
-def getMessage():
-    bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
-    return "!", 200
-
-
-@server.route('/', methods=["GET"])
-def index():
-    bot.remove_webhook()
-    bot.set_webhook(url="https://{}.herokuapp.com/{}".format(config.APP_NAME, config.TOKEN))
-    return "Hello from Heroku!", 200
 
 
 @bot.message_handler(commands=['start'])
@@ -36,9 +24,29 @@ def send_text(message):
         bot.send_message(message.chat.id, "Отличная погодка, не правда ли?")
 
 
-if __name__ == '__main__':
-    bot.infinity_polling()
+# Проверим, есть ли переменная окружения Хероку
+if "HEROKU" in list(os.environ.keys()):
+    server = Flask(__name__)
 
 
-server.run(host="0.0.0.0", port=os.environ.get('PORT', 5000))
-server = Flask(__name__)
+    @server.route("/" + config.TOKEN, methods=['POST'])
+    def getMessage():
+        print("LET'S DO WEBHOOK")
+        bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
+        return "!", 200
+
+
+    @server.route("/")
+    def webhook():
+        print("INDEX PAGE")
+        bot.remove_webhook()
+        bot.set_webhook(bot.set_webhook(url="https://{}.herokuapp.com/{}".format(config.APP_NAME, config.TOKEN)))
+        return "?", 200
+
+
+    server.run(host="0.0.0.0", port=os.environ.get('PORT', 80))
+else:
+    # если переменной окружения HEROKU нету, значит это запуск с машины разработчика.
+    # Удаляем вебхук на всякий случай, и запускаем с обычным поллингом.
+    bot.remove_webhook()
+    bot.polling(none_stop=True)
