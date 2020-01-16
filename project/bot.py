@@ -32,6 +32,8 @@ def send_text(message):
         bot.send_message(message.chat.id, "Все отлично!")
     elif 'ты классный' in message.text.lower():
         bot.send_sticker(message.chat.id, 'CAADAgADMwIAArrAlQWc3UwCquHIDhYE')
+    else:
+        bot.send_message("Отличная погодка, не правда ли?")
 
 
 if __name__ == '__main__':
