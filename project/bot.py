@@ -6,7 +6,7 @@ from flask import Flask, request
 
 bot = telebot.TeleBot(config.TOKEN)
 server = Flask(__name__)
-
+print("HELLO HUROKU")
 
 @server.route("/" + config.TOKEN, methods=['POST'])
 def getMessage():
@@ -33,7 +33,7 @@ def send_text(message):
     elif 'ты классный' in message.text.lower():
         bot.send_sticker(message.chat.id, 'CAADAgADMwIAArrAlQWc3UwCquHIDhYE')
     else:
-        bot.send_message("Отличная погодка, не правда ли?")
+        bot.send_message(message.chat.id, "Отличная погодка, не правда ли?")
 
 
 if __name__ == '__main__':
