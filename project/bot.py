@@ -31,6 +31,8 @@ if "HEROKU" in list(os.environ.keys()):
     print("HEROKU STARTING FLASK")
     app = Flask(__name__)
     print("FLASK RUNNING")
+    bot.remove_webhook()
+    sleep(5)
     bot.set_webhook(bot.set_webhook(url="https://{}.herokuapp.com/bot{}".format(config.APP_NAME, config.TOKEN)))
     print("WEBHOOK SET")
 
