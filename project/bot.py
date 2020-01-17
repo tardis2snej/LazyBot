@@ -31,17 +31,22 @@ if "HEROKU" in list(os.environ.keys()):
     app = flask.Flask(__name__)
     print("FLASK RUNNING")
     bot.remove_webhook()
-    sleep(1)
+    sleep(2)
     bot.set_webhook(url="https://{}.herokuapp.com/bot{}".format(config.APP_NAME, config.TOKEN))
+    sleep(2)
     print("WEBHOOK SET")
 
     @app.route("/bot{}".format(config.TOKEN), methods=['POST'])
     def get_message():
         print("LET'S DO UPDATE")
         if flask.request.headers.get('content-type') == 'application/json':
+            sleep(2)
             json_string = flask.request.get_data().encode('utf-8')
+            sleep(2)
             update = telebot.types.Update.de_json(json_string)
+            sleep(2)
             bot.process_new_messages([update.message])
+            sleep(2)
             return ''
         else:
             flask.abort(403)
