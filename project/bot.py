@@ -1,69 +1,29 @@
-# -*- coding: utf-8 -*-
 import telebot
-import os
-import config
-import flask
-from time import sleep
+import time
+from flask import Flask, request
 
-bot = telebot.TeleBot(config.TOKEN)
-# PORT = int(os.environ.get('PORT', '80'))
-# print("PORT IS", PORT)
-
-
-@bot.message_handler(commands=['start'])
-def start_message(message):
-    bot.send_message(message.chat.id, "Привет! Как насчет ленивого разговора?")
+server = Flask(__name__)
+bot = telebot.TeleBot('986852722:AAHBNwKBZj3Brq5uk9l346Fn570cOI6dY3A')
+bot.remove_webhook()
+time.sleep(2)
+bot.set_webhook(url="https://lazy-bot007.herokuapp.com/bot986852722:AAHBNwKBZj3Brq5uk9l346Fn570cOI6dY3A/")
 
 
-@bot.message_handler(content_types=['text'])
-def send_text(message):
-    if 'как дела' in message.text.lower():
-        bot.send_message(message.chat.id, "Все отлично!")
-    elif 'ты классный' in message.text.lower():
-        bot.send_sticker(message.chat.id, 'CAADAgADMwIAArrAlQWc3UwCquHIDhYE')
+@server.route("/", methods=['POST'])
+def getMessage():
+  r = request.get_json()
+  if "message" in r.keys():
+    chat_id = r["message"]["chat"]["id"]
+    if "text" in r["message"]:
+      text_mess = r["message"]["text"]
     else:
-        bot.send_message(message.chat.id, "Отличная погодка, не правда ли?")
+      bot.send_message(chat_id=chat_id, text="Какая то не понятная проблема", parse_mode='HTML')
+      return "ok", 200
+
+  if text_mess == '/start':
+    bot.send_message(chat_id=chat_id, text="Привет WebHook")
+    return "ok", 200
 
 
-# Проверим, есть ли переменная окружения Хероку
-# if "HEROKU" in list(os.environ.keys()):
-#     print("HEROKU STARTING FLASK")
-#     app = flask.Flask(__name__)
-#     print("FLASK RUNNING")
-#     bot.remove_webhook()
-#     sleep(2)
-#     bot.set_webhook(url="https://{}.herokuapp.com/bot{}".format(config.APP_NAME, config.TOKEN))
-#     sleep(2)
-#     print("WEBHOOK SET")
-#
-#     @app.route("/bot{}".format(config.TOKEN), methods=['POST'])
-#     def get_message():
-#         print("UPDATE RECEIVED")
-#         # if flask.request.headers.get('content-type') == 'application/json':
-#         #     sleep(2)
-#         #     json_string = flask.request.get_data().encode('utf-8')
-#         #     sleep(2)
-#         #     update = telebot.types.Update.de_json(json_string)
-#         #     sleep(2)
-#         #     bot.process_new_messages([update.message])
-#         #     sleep(2)
-#         #     return ''
-#         # else:
-#         #     flask.abort(403)
-#
-#
-#     @app.route("/")
-#     def webhook():
-#         print("INDEX PAGE")
-#         return ".", 200
-#
-#     # if __name__ == '__main__':
-#     print("START SERVER RUN")
-#         # server.run(host="0.0.0.0", port=PORT)
-#     app.run(threaded=True)
-#     print("END SERVER RUN")
-# else:
-    # если переменной окружения HEROKU нету, значит это запуск с машины разработчика.
-    # Удаляем вебхук на всякий случай, и запускаем с обычным поллингом.
-    print("LONG POOLING")
-    bot.polling(none_stop=True)
+if __name__ == "main":
+  server.run()
