@@ -5,8 +5,8 @@ import config
 from flask import Flask, request
 
 bot = telebot.TeleBot(config.TOKEN)
-PORT = int(os.environ.get('PORT', '80'))
-print("PORT IS", PORT)
+# PORT = int(os.environ.get('PORT', '80'))
+# print("PORT IS", PORT)
 
 
 @bot.message_handler(commands=['start'])
@@ -45,7 +45,7 @@ if "HEROKU" in list(os.environ.keys()):
         bot.set_webhook(bot.set_webhook(url="https://{}.herokuapp.com/bot{}".format(config.APP_NAME, config.TOKEN)))
         return "?", 200
 
-    if __name__ == '__main__':
+    # if __name__ == '__main__':
         print("START SERVER RUN")
         # server.run(host="0.0.0.0", port=PORT)
         app.run(threaded=True)
