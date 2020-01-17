@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-from time import sleep
-
 import telebot
 import os
 import config
-from flask import Flask, request
+import flask
+from time import sleep
 
 bot = telebot.TeleBot(config.TOKEN)
 # PORT = int(os.environ.get('PORT', '80'))
@@ -29,7 +28,7 @@ def send_text(message):
 # Проверим, есть ли переменная окружения Хероку
 if "HEROKU" in list(os.environ.keys()):
     print("HEROKU STARTING FLASK")
-    app = Flask(__name__)
+    app = flask.Flask(__name__)
     print("FLASK RUNNING")
     bot.remove_webhook()
     sleep(1)
@@ -39,8 +38,13 @@ if "HEROKU" in list(os.environ.keys()):
     @app.route("/bot{}".format(config.TOKEN), methods=['POST'])
     def get_message():
         print("LET'S DO UPDATE")
-        bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
-        return "!", 200
+        if flask.request.headers.get('content-type') == 'application/json':
+            json_string = flask.request.get_data().encode('utf-8')
+            update = telebot.types.Update.de_json(json_string)
+            bot.process_new_messages([update.message])
+            return ''
+        else:
+            flask.abort(403)
 
 
     @app.route("/")
