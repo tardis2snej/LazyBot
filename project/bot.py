@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from time import sleep
+
 import telebot
 import os
 import config
@@ -30,6 +32,7 @@ if "HEROKU" in list(os.environ.keys()):
     app = Flask(__name__)
     print("FLASK RUNNING")
     bot.remove_webhook()
+    sleep(1)
     bot.set_webhook(bot.set_webhook(url="https://{}.herokuapp.com/bot{}".format(config.APP_NAME, config.TOKEN)))
     print("WEBHOOK SET")
 
@@ -57,5 +60,4 @@ else:
     # если переменной окружения HEROKU нету, значит это запуск с машины разработчика.
     # Удаляем вебхук на всякий случай, и запускаем с обычным поллингом.
     print("LONG POOLING")
-    bot.remove_webhook()
     bot.polling(none_stop=True)
