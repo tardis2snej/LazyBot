@@ -32,8 +32,8 @@ if "HEROKU" in list(os.environ.keys()):
     app = Flask(__name__)
     print("FLASK RUNNING")
     bot.remove_webhook()
-    sleep(5)
-    bot.set_webhook(bot.set_webhook(url="https://{}.herokuapp.com/bot{}".format(config.APP_NAME, config.TOKEN)))
+    sleep(1)
+    bot.set_webhook(url="https://{}.herokuapp.com/bot{}".format(config.APP_NAME, config.TOKEN))
     print("WEBHOOK SET")
 
     @app.route("/bot{}".format(config.TOKEN), methods=['POST'])
@@ -46,10 +46,7 @@ if "HEROKU" in list(os.environ.keys()):
     @app.route("/")
     def webhook():
         print("INDEX PAGE")
-        return '.'
-        # bot.remove_webhook()
-        # bot.set_webhook(bot.set_webhook(url="https://{}.herokuapp.com/bot{}".format(config.APP_NAME, config.TOKEN)))
-        # return "?", 200
+        return ".", 200
 
     # if __name__ == '__main__':
     print("START SERVER RUN")
