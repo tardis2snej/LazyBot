@@ -1,3 +1,6 @@
+import os
+import time
+
 import telebot
 from flask import Flask, request
 import logging
@@ -6,6 +9,11 @@ bot = telebot.TeleBot('986852722:AAHBNwKBZj3Brq5uk9l346Fn570cOI6dY3A')
 
 logger = telebot.logger
 telebot.logger.setLevel(logging.INFO)
+
+bot.remove_webhook()
+time.sleep(2)
+bot.set_webhook(url="https://lazy-bot007.herokuapp.com/bot986852722:AAHBNwKBZj3Brq5uk9l346Fn570cOI6dY3A")
+print("WEBHOOK SET")
 
 
 @bot.message_handler(commands=['start'])
@@ -25,4 +33,6 @@ def get_message():
     return "!", 200
 
 
-app.run()
+print("BEFORE APP.RUN")
+app.run(host="0.0.0.0", port=os.environ.get('PORT', 80))
+print("AFTER APP.RUN")
