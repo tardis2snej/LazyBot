@@ -29,7 +29,9 @@ if "HEROKU" in list(os.environ.keys()):
     print("HEROKU STARTING FLASK")
     app = Flask(__name__)
     print("FLASK RUNNING")
-
+    bot.remove_webhook()
+    bot.set_webhook(bot.set_webhook(url="https://{}.herokuapp.com/bot{}".format(config.APP_NAME, config.TOKEN)))
+    print("WEBHOOK SET")
 
     @app.route("/bot{}".format(config.TOKEN), methods=['POST'])
     def get_message():
@@ -41,15 +43,16 @@ if "HEROKU" in list(os.environ.keys()):
     @app.route("/")
     def webhook():
         print("INDEX PAGE")
-        bot.remove_webhook()
-        bot.set_webhook(bot.set_webhook(url="https://{}.herokuapp.com/bot{}".format(config.APP_NAME, config.TOKEN)))
-        return "?", 200
+        return '.'
+        # bot.remove_webhook()
+        # bot.set_webhook(bot.set_webhook(url="https://{}.herokuapp.com/bot{}".format(config.APP_NAME, config.TOKEN)))
+        # return "?", 200
 
     # if __name__ == '__main__':
-        print("START SERVER RUN")
+    print("START SERVER RUN")
         # server.run(host="0.0.0.0", port=PORT)
-        app.run(threaded=True)
-        print("END SERVER RUN")
+    app.run(threaded=True)
+    print("END SERVER RUN")
 else:
     # если переменной окружения HEROKU нету, значит это запуск с машины разработчика.
     # Удаляем вебхук на всякий случай, и запускаем с обычным поллингом.
