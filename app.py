@@ -33,7 +33,7 @@ app = Flask(__name__)
 def get_message():
     print("POST METHOD")
     bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
-    return 200
+    return "!", 200
 
 
 @app.route("/", methods=['GET'])
