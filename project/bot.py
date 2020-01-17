@@ -5,8 +5,8 @@ import config
 from flask import Flask, request
 
 bot = telebot.TeleBot(config.TOKEN)
-
-print("HELLO HUROKU")
+PORT = int(os.environ.get('PORT', '80'))
+print("PORT IS", PORT)
 
 
 @bot.message_handler(commands=['start'])
@@ -26,27 +26,33 @@ def send_text(message):
 
 # Проверим, есть ли переменная окружения Хероку
 if "HEROKU" in list(os.environ.keys()):
-    server = Flask(__name__)
+    print("HEROKU STARTING FLASK")
+    app = Flask(__name__)
+    print("FLASK RUNNING")
 
 
-    @server.route("/" + config.TOKEN, methods=['POST'])
-    def getMessage():
-        print("LET'S DO WEBHOOK")
+    @app.route("/bot{}".format(config.TOKEN), methods=['POST'])
+    def get_message():
+        print("LET'S DO UPDATE")
         bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
         return "!", 200
 
 
-    @server.route("/")
+    @app.route("/")
     def webhook():
         print("INDEX PAGE")
         bot.remove_webhook()
-        bot.set_webhook(bot.set_webhook(url="https://{}.herokuapp.com/{}".format(config.APP_NAME, config.TOKEN)))
+        bot.set_webhook(bot.set_webhook(url="https://{}.herokuapp.com/bot{}".format(config.APP_NAME, config.TOKEN)))
         return "?", 200
 
-
-    server.run(host="0.0.0.0", port=os.environ.get('PORT', 80))
+    if __name__ == '__main__':
+        print("START SERVER RUN")
+        # server.run(host="0.0.0.0", port=PORT)
+        app.run(threaded=True)
+        print("END SERVER RUN")
 else:
     # если переменной окружения HEROKU нету, значит это запуск с машины разработчика.
     # Удаляем вебхук на всякий случай, и запускаем с обычным поллингом.
+    print("LONG POOLING")
     bot.remove_webhook()
     bot.polling(none_stop=True)
