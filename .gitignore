@@ -130,3 +130,6 @@ dmypy.json
 
 #sensitive data
 config.py
+
+#virtual enviroment
+/venv
