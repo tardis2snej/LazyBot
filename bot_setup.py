@@ -24,9 +24,6 @@ def setup(bot):
 
 def start_bot(bot, name):
     if "HEROKU" in list(os.environ.keys()):
-        bot.set_webhook(url="https://lazy-bot007.herokuapp.com/bot" + get_token())
-        print("WEBHOOK SET")
-
         app = Flask(__name__)
 
         @app.route("/bot" + get_token(), methods=['POST'])
@@ -47,3 +44,9 @@ def start_bot(bot, name):
         bot.polling()
         return 0
 
+
+def is_dev_run():
+    if "HEROKU" in list(os.environ.keys()):
+        return True
+    else:
+        return False
