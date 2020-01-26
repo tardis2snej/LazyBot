@@ -15,7 +15,7 @@ def answer(message):
     bot.send_message(message.chat.id, ':)')
 
 
-bot_setup.start_bot(bot)
+bot_setup.start_bot(bot, __name__)
 
 
 
