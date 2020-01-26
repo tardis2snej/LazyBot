@@ -1,7 +1,11 @@
+import time
+
 import telebot
 import bot_setup
 
 bot = telebot.TeleBot(bot_setup.get_token())
+bot.remove_webhook()
+time.sleep(2)
 bot_setup.setup(bot)
 
 

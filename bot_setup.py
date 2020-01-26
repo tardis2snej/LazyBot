@@ -18,9 +18,6 @@ def setup(bot):
     logger = telebot.logger
     telebot.logger.setLevel(logging.INFO)
 
-    bot.remove_webhook()
-    time.sleep(2)
-
 
 def start_bot(bot, name):
     if "HEROKU" in list(os.environ.keys()):
