@@ -14,11 +14,6 @@ def get_token():
     return token
 
 
-def setup(bot):
-    logger = telebot.logger
-    telebot.logger.setLevel(logging.INFO)
-
-
 def start_bot(bot, name):
     if "HEROKU" in list(os.environ.keys()):
         app = Flask(__name__)
