@@ -4,8 +4,8 @@ import telebot
 from flask import Flask, request
 import logging
 
-if "HEROKU" in list(os.environ.keys()):
-    token = os.environ.get('token')
+if "TOKEN" in list(os.environ.keys()):
+    token = os.environ.get('TOKEN')
     isDevRun = False
 else:
     import config
@@ -17,7 +17,8 @@ bot = telebot.TeleBot(token)
 logger = telebot.logger
 telebot.logger.setLevel(logging.INFO)
 
-
+bot.remove_webhook()
+time.sleep(2)
 
 
 @bot.message_handler(commands=['start'])
@@ -32,8 +33,6 @@ def answer(message):
 
 # starting bot
 if not isDevRun:
-    bot.remove_webhook()
-    time.sleep(2)
     bot.set_webhook(url="https://lazy-bot007.herokuapp.com/bot" + token)
     print("WEBHOOK SET")
     app = Flask(__name__)
