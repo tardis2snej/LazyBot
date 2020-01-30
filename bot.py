@@ -4,8 +4,6 @@ import telebot
 from flask import Flask, request
 import logging
 
-print(os.environ.keys())
-
 if "TOKEN" in list(os.environ.keys()):
     token = os.environ.get('TOKEN')
     isDevRun = False
@@ -36,20 +34,17 @@ def answer(message):
 # starting bot
 if not isDevRun:
     bot.set_webhook(url="https://lazy-bot007.herokuapp.com/bot" + token)
-    print("WEBHOOK SET")
     app = Flask(__name__)
 
 
     @app.route("/bot" + token, methods=['POST'])
     def get_message():
-        print("POST METHOD")
         bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
         return "!", 200
 
 
     @app.route("/", methods=['GET'])
     def index_page():
-        print("GET METHOD")
         return "!", 200
 
 
