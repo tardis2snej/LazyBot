@@ -4,6 +4,8 @@ import telebot
 from flask import Flask, request
 import logging
 
+print(os.environ.keys())
+
 if "TOKEN" in list(os.environ.keys()):
     token = os.environ.get('TOKEN')
     isDevRun = False
